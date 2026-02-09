@@ -607,6 +607,21 @@
             color: #111;
         }
 
+        .puzzle-reset-btn {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 8px;
+            padding: 4px 8px;
+            transition: color 0.2s;
+        }
+
+        .puzzle-reset-btn:hover {
+            color: #666;
+        }
+
         /* CAPTCHA STAGE */
         #captchaStage {
             position: fixed;
@@ -847,6 +862,7 @@
                             <img src="images/full-image.png" alt="" />
                         </div>
                     </div>
+                    <button type="button" class="puzzle-reset-btn" id="puzzleResetBtn">Start Over</button>
                 </div>
                 <div class="puzzle-reveal-text" id="puzzleRevealText">
                     <p class="complete-line">...you complete me.</p>
@@ -867,6 +883,24 @@
     </div>
 
     <script>
+        // URL PARAMETER SUPPORT - Multi-person customization
+        const urlParams = new URLSearchParams(window.location.search);
+        const personName = urlParams.get('name') || 'Valentina'; // Default to Valentina
+        const imageFolder = urlParams.get('name') ? `images/${urlParams.get('name').toLowerCase()}/` : 'images/';
+        
+        // Update greeting text and full image
+        document.addEventListener('DOMContentLoaded', () => {
+            const titleElement = document.querySelector('.modal-title');
+            if (titleElement) {
+                titleElement.textContent = `Dear ${personName}...`;
+            }
+            
+            const fullImage = document.querySelector('#puzzleFullImageOverlay img');
+            if (fullImage) {
+                fullImage.src = `${imageFolder}full-image.png`;
+            }
+        });
+        
         // CAPTCHA LOGIC
         const captchaStage = document.getElementById('captchaStage');
         const captchaCheckbox = document.getElementById('captchaCheckbox');
@@ -878,15 +912,15 @@
         // You'll need to add 9 captcha images to the images/ folder
         // Named: captcha-1.png through captcha-9.png
         const captchaImages = [
-            'images/captcha-1.png',
-            'images/captcha-2.png',
-            'images/captcha-3.png',
-            'images/captcha-4.png',
-            'images/captcha-5.png',
-            'images/captcha-6.png',
-            'images/captcha-7.png',
-            'images/captcha-8.png',
-            'images/captcha-9.png'
+            `${imageFolder}captcha-1.png`,
+            `${imageFolder}captcha-2.png`,
+            `${imageFolder}captcha-3.png`,
+            `${imageFolder}captcha-4.png`,
+            `${imageFolder}captcha-5.png`,
+            `${imageFolder}captcha-6.png`,
+            `${imageFolder}captcha-7.png`,
+            `${imageFolder}captcha-8.png`,
+            `${imageFolder}captcha-9.png`
         ];
         
         let selectedImages = new Set();
@@ -1014,7 +1048,7 @@
                     tile.classList.add('empty');
                     // No image: empty space is transparent until puzzle is solved
                 } else {
-                    tile.style.backgroundImage = `url('images/tile-${piece}.png')`;
+                    tile.style.backgroundImage = `url('${imageFolder}tile-${piece}.png')`;
                     tile.onclick = () => moveTile(index);
                 }
                 
@@ -1048,7 +1082,7 @@
             const puzzleRevealText = document.getElementById('puzzleRevealText');
             const puzzleFullImageOverlay = document.getElementById('puzzleFullImageOverlay');
             const emptyTile = puzzleGrid.querySelector('.puzzle-tile.empty');
-            if (emptyTile) emptyTile.style.backgroundImage = "url('images/tile-3.png')";
+            if (emptyTile) emptyTile.style.backgroundImage = `url('${imageFolder}tile-3.png')`;
             puzzleContainer.classList.add('completed');
             puzzleGrid.classList.add('merging');
             setTimeout(() => {
@@ -1087,6 +1121,10 @@
         });
         
         document.getElementById('resetBtn').addEventListener('click', () => {
+            window.location.reload();
+        });
+        
+        document.getElementById('puzzleResetBtn').addEventListener('click', () => {
             window.location.reload();
         });
         
