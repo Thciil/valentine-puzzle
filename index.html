@@ -25,7 +25,7 @@
 
         /* Envelope stage: no modal, just envelope on pink background */
         #envelopeStage {
-            display: flex;
+            display: none; /* Hidden initially - shown after captcha */
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -33,6 +33,10 @@
             position: fixed;
             inset: 0;
             z-index: 10;
+        }
+
+        #envelopeStage.visible {
+            display: flex;
         }
 
         body.show-modal .container {
@@ -603,9 +607,218 @@
             color: #111;
         }
 
+        /* CAPTCHA STAGE */
+        #captchaStage {
+            position: fixed;
+            inset: 0;
+            background: #FFDAE9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        #captchaStage.hidden {
+            display: none;
+        }
+
+        .captcha-checkbox-container {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+            transition: border-color 0.2s;
+        }
+
+        .captcha-checkbox-container:hover {
+            border-color: #aaa;
+        }
+
+        .captcha-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .captcha-checkbox.checked {
+            background: #1a73e8;
+            border-color: #1a73e8;
+        }
+
+        .captcha-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .captcha-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* CAPTCHA MODAL */
+        .captcha-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+        }
+
+        .captcha-modal.visible {
+            display: flex;
+        }
+
+        .captcha-modal-content {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            max-width: 90vw;
+        }
+
+        .captcha-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .captcha-instruction {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .captcha-target {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .captcha-subtext {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .captcha-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 20px;
+        }
+
+        .captcha-image-box {
+            aspect-ratio: 1;
+            border: 3px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .captcha-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .captcha-image-box:hover {
+            border-color: #1a73e8;
+        }
+
+        .captcha-image-box.selected {
+            border-color: #1a73e8;
+            background: rgba(26, 115, 232, 0.1);
+        }
+
+        .captcha-image-box.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #1a73e8;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .captcha-footer {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .captcha-verify-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .captcha-verify-btn:hover {
+            background: #1557b0;
+        }
+
+        .captcha-verify-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
+    <!-- CAPTCHA STAGE: Checkbox + Modal -->
+    <div id="captchaStage">
+        <div class="captcha-checkbox-container" id="captchaCheckbox">
+            <div class="captcha-checkbox" id="checkbox"></div>
+            <span class="captcha-label">I'm not a robot</span>
+        </div>
+    </div>
+
+    <!-- CAPTCHA MODAL -->
+    <div class="captcha-modal" id="captchaModal">
+        <div class="captcha-modal-content">
+            <div class="captcha-header">
+                <div class="captcha-instruction">Select all images with:</div>
+                <div class="captcha-target">your valentine</div>
+                <div class="captcha-subtext">Click verify once there are none left.</div>
+            </div>
+            <div class="captcha-grid" id="captchaGrid">
+                <!-- 9 images will be inserted here -->
+            </div>
+            <div class="captcha-footer">
+                <button class="captcha-verify-btn" id="captchaVerifyBtn">Verify</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ENVELOPE: no modal, just envelope on pink background -->
     <div id="envelopeStage">
         <div class="envelope" id="envelope">
@@ -625,7 +838,7 @@
         <div class="modal-inner">
             <!-- VIEW: Puzzle (playing + completed state in same view) -->
             <div id="puzzleView" class="modal-view">
-                <h1 class="modal-title">Dear Gaby...</h1>
+                <h1 class="modal-title">Dear Valentina...</h1>
                 <div class="puzzle-container" id="puzzleContainer">
                     <div class="puzzle-grid-wrap" id="puzzleGridWrap">
                         <div class="puzzle-grid" id="puzzleGrid"></div>
@@ -653,6 +866,80 @@
     </div>
 
     <script>
+        // CAPTCHA LOGIC
+        const captchaStage = document.getElementById('captchaStage');
+        const captchaCheckbox = document.getElementById('captchaCheckbox');
+        const checkbox = document.getElementById('checkbox');
+        const captchaModal = document.getElementById('captchaModal');
+        const captchaGrid = document.getElementById('captchaGrid');
+        const captchaVerifyBtn = document.getElementById('captchaVerifyBtn');
+        
+        // You'll need to add 9 captcha images to the images/ folder
+        // Named: captcha-1.png through captcha-9.png
+        const captchaImages = [
+            'images/captcha-1.png',
+            'images/captcha-2.png',
+            'images/captcha-3.png',
+            'images/captcha-4.png',
+            'images/captcha-5.png',
+            'images/captcha-6.png',
+            'images/captcha-7.png',
+            'images/captcha-8.png',
+            'images/captcha-9.png'
+        ];
+        
+        let selectedImages = new Set();
+        
+        // Populate captcha grid
+        captchaImages.forEach((src, index) => {
+            const box = document.createElement('div');
+            box.className = 'captcha-image-box';
+            box.dataset.index = index;
+            
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = '';
+            
+            box.appendChild(img);
+            captchaGrid.appendChild(box);
+            
+            box.addEventListener('click', () => {
+                if (selectedImages.has(index)) {
+                    selectedImages.delete(index);
+                    box.classList.remove('selected');
+                } else {
+                    selectedImages.add(index);
+                    box.classList.add('selected');
+                }
+            });
+        });
+        
+        // Checkbox click → show captcha modal
+        captchaCheckbox.addEventListener('click', () => {
+            checkbox.classList.add('checked');
+            setTimeout(() => {
+                captchaModal.classList.add('visible');
+            }, 300);
+        });
+        
+        // Verify button → check if all 9 selected
+        captchaVerifyBtn.addEventListener('click', () => {
+            if (selectedImages.size === 9) {
+                // Success! Hide captcha, show envelope
+                captchaModal.classList.remove('visible');
+                setTimeout(() => {
+                    captchaStage.classList.add('hidden');
+                    envelopeStage.classList.add('visible');
+                }, 300);
+            } else {
+                // Not all selected - shake the button or show error
+                captchaVerifyBtn.textContent = `Select all (${selectedImages.size}/9)`;
+                setTimeout(() => {
+                    captchaVerifyBtn.textContent = 'Verify';
+                }, 1500);
+            }
+        });
+        
         // ENVELOPE → MODAL (one modal, two views: puzzle + success)
         const envelopeStage = document.getElementById('envelopeStage');
         const envelope = document.getElementById('envelope');
