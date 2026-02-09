@@ -1,0 +1,25 @@
+# Example URLs for Family
+
+After deploying to GitHub Pages (https://Thciil.github.io/valentine-puzzle/):
+
+YOU → VALENTINA:
+https://Thciil.github.io/valentine-puzzle/
+
+BROTHER → MATHILDE:
+https://Thciil.github.io/valentine-puzzle/?name=Mathilde
+
+FATHER → JETTE:
+https://Thciil.github.io/valentine-puzzle/?name=Jette
+
+SISTER'S BOYFRIEND → NATALIE:
+https://Thciil.github.io/valentine-puzzle/?name=Natalie
+
+---
+
+Each URL loads different images from:
+- images/valentina/ (or images/ root)
+- images/mathilde/
+- images/jette/
+- images/natalie/
+
+Just create the folders, add the images, deploy once, share different URLs!
