@@ -995,8 +995,8 @@
                     envelopeStage.classList.add('visible');
                 }, 300);
             } else {
-                // Not all selected - shake the button or show error
-                captchaVerifyBtn.textContent = `Select all (${selectedImages.size}/9)`;
+                // Not all selected - show playful error
+                captchaVerifyBtn.textContent = 'Keep looking!';
                 setTimeout(() => {
                     captchaVerifyBtn.textContent = 'Verify';
                 }, 1500);
