@@ -875,7 +875,7 @@
             <div id="successView" class="modal-view">
                 <p class="modal-title">Yay, see you soon! 🇨🇱❤️</p>
                 <div class="success-gif-wrap">
-                    <img src="giphy.gif" alt="" />
+                    <img src="giphy.gif" alt="" id="successGif" />
                 </div>
                 <button type="button" class="reset-btn" id="resetBtn">Reset</button>
             </div>
@@ -898,6 +898,11 @@
             const fullImage = document.querySelector('#puzzleFullImageOverlay img');
             if (fullImage) {
                 fullImage.src = `${imageFolder}full-image.png`;
+            }
+            
+            const successGif = document.getElementById('successGif');
+            if (successGif) {
+                successGif.src = `${imageFolder}giphy.gif`;
             }
         });
         
