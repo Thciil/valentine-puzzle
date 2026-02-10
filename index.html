@@ -887,8 +887,16 @@
         // URL PARAMETER SUPPORT - Multi-person customization
         const urlParams = new URLSearchParams(window.location.search);
         const rawName = urlParams.get('name');
-        const personName = rawName ? rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase() : '👀'; // Default to 👀 if no name
-        const imageFolder = urlParams.get('name') ? `images/${urlParams.get('name').toLowerCase()}/` : 'images/';
+        
+        // If no name parameter, show ONLY the emoji
+        if (!rawName) {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; font-size: 120px; background: #FFDAE9;">👀</div>';
+            });
+            // Stop execution here
+        } else {
+            const personName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
+            const imageFolder = `images/${rawName.toLowerCase()}/`;
         
         // Update greeting text and full image
         document.addEventListener('DOMContentLoaded', () => {
@@ -1205,6 +1213,7 @@
             document.body.appendChild(confetti);
             setTimeout(() => confetti.remove(), (duration + 0.5) * 1000);
         }
+        } // Close the else block for name parameter check
     </script>
 </body>
 </html>
