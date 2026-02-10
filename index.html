@@ -873,7 +873,7 @@
 
             <!-- VIEW: Success -->
             <div id="successView" class="modal-view">
-                <p class="modal-title">Yay, see you soon! 🇨🇱❤️</p>
+                <p class="modal-title" id="successMessage">Yay, see you soon! 🇨🇱❤️</p>
                 <div class="success-gif-wrap">
                     <img src="giphy.gif" alt="" id="successGif" />
                 </div>
@@ -885,7 +885,8 @@
     <script>
         // URL PARAMETER SUPPORT - Multi-person customization
         const urlParams = new URLSearchParams(window.location.search);
-        const personName = urlParams.get('name') || 'Valentina'; // Default to Valentina
+        const rawName = urlParams.get('name') || 'Valentina';
+        const personName = rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase(); // Capitalize first letter
         const imageFolder = urlParams.get('name') ? `images/${urlParams.get('name').toLowerCase()}/` : 'images/';
         
         // Update greeting text and full image
@@ -903,6 +904,18 @@
             const successGif = document.getElementById('successGif');
             if (successGif) {
                 successGif.src = `${imageFolder}giphy.gif`;
+            }
+            
+            // Custom success messages per person
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                const messages = {
+                    'Valentina': 'Yay, see you soon! 🇨🇱❤️',
+                    'Natalie': 'Hvor er det vigtigt 💙💛',
+                    'Mathilde': 'Yay, see you soon! 🇨🇱❤️', // TODO: customize
+                    'Jette': 'Yay, see you soon! 🇨🇱❤️' // TODO: customize
+                };
+                successMessage.textContent = messages[personName] || messages['Valentina'];
             }
         });
         
