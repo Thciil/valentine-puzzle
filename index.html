@@ -912,7 +912,7 @@
                 const messages = {
                     'Valentina': 'Yay, see you soon! 🇨🇱❤️',
                     'Natalie': 'Hvor er det vigtigt 💙💛',
-                    'Mathilde': 'Sagen er løst: Vi er perfekte sammen! 👮‍♂️❤️👩‍⚕️',
+                    'Mathilde': 'Sagen er opklaret: Vi er perfekte sammen! 👮‍♂️❤️👩‍⚕️',
                     'Jette': 'Min kærlighed til dig er på fuld skrue! ❤️'
                 };
                 successMessage.textContent = messages[personName] || messages['Valentina'];
@@ -1034,8 +1034,8 @@
         function scramblePuzzle() {
             let lastMove = -1; // Track last move to prevent backtracking
             
-            // TESTING NOTE: Use "i < 1" instead of "i < 10" so that the puzzle is one move away from completion
-            for (let i = 0; i < 10; i++) {
+            // TESTING NOTE: Use "i < 1" instead of "i < 7" so that the puzzle is one move away from completion
+            for (let i = 0; i < 7; i++) {
                 const emptyIndex = currentState.indexOf(EMPTY_PIECE);
                 let validMoves = getValidMoves(emptyIndex);
                 
