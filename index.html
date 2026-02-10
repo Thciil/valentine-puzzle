@@ -1032,12 +1032,26 @@
         }
         
         function scramblePuzzle() {
+            let lastMove = -1; // Track last move to prevent backtracking
+            
             // TESTING NOTE: Use "i < 1" instead of "i < 10" so that the puzzle is one move away from completion
             for (let i = 0; i < 10; i++) {
                 const emptyIndex = currentState.indexOf(EMPTY_PIECE);
-                const validMoves = getValidMoves(emptyIndex);
+                let validMoves = getValidMoves(emptyIndex);
+                
+                // Remove the last move to prevent undoing the previous move
+                if (lastMove !== -1) {
+                    validMoves = validMoves.filter(move => move !== lastMove);
+                }
+                
+                // Pick random move from remaining options
                 const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+                
+                // Swap
                 [currentState[emptyIndex], currentState[randomMove]] = [currentState[randomMove], currentState[emptyIndex]];
+                
+                // Remember where empty WAS (to exclude it next iteration)
+                lastMove = emptyIndex;
             }
         }
         
@@ -1143,8 +1157,29 @@
         });
         
         document.getElementById('puzzleResetBtn').addEventListener('click', () => {
-            window.location.reload();
+            resetPuzzle();
         });
+        
+        function resetPuzzle() {
+            // Reset state
+            currentState = [...solution];
+            
+            // Clear completion classes
+            const puzzleContainer = document.getElementById('puzzleContainer');
+            const puzzleGridWrap = document.getElementById('puzzleGridWrap');
+            const puzzleRevealText = document.getElementById('puzzleRevealText');
+            const puzzleFullImageOverlay = document.getElementById('puzzleFullImageOverlay');
+            
+            puzzleContainer.classList.remove('completed');
+            puzzleGrid.classList.remove('merging');
+            puzzleGridWrap.classList.remove('revealing');
+            puzzleRevealText.classList.remove('show');
+            puzzleFullImageOverlay.classList.remove('show');
+            
+            // Re-scramble and render
+            scramblePuzzle();
+            renderPuzzle();
+        }
         
         function runConfettiFor(ms) {
             const end = Date.now() + ms;
